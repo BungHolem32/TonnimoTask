@@ -1,0 +1,10 @@
+.idea
+.idea/TonnimoTask.iml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+server/node_modules/
+server/public/images/
+server/public/javascripts/
+
