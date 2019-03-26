@@ -1,26 +1,29 @@
 <template>
   <div class="tasks container">
     <h1>ToDo <small>list</small> </h1>
+    <!--ADD NEW TASK-->
     <create></create>
+    <!--DISPLAY LIST OF TASKS-->
     <ul class="list-group text-left">
       <li v-for="task in records" :key="task.id" class="list-group-item" :class="{done:task.done}">
         <label for="done" class="sr-only"></label>
         <input id="done" type="checkbox" v-model="task.done">
         {{task.description}}
         <div class="actions">
-          <b-button variant="success" v-b-modal.editModal @click="edit(task)">Edit</b-button>
-          <b-button variant="danger" @click="remove(task)">Delete</b-button>
+          <b-button size="sm" variant="success" v-b-modal.editModal @click="edit(task)">Edit</b-button>
+          <b-button size="sm" variant="danger" @click="remove(task)">Delete</b-button>
         </div>
       </li>
     </ul>
-    <modal ref="myModal" :editedTask = 'editedTask'></modal>
+    <!--EDIT PAGE MODAL-->
+    <edit ref="editModal" :editedTask = 'editedTask'></edit>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 import create from './_partials/create'
-import modal from './_partials/modal'
+import edit from './_partials/edit'
 
 export default {
   name: "Tasks",
@@ -40,7 +43,7 @@ export default {
   },
   components:{
     create,
-    modal
+    edit
   },
   computer: {
     ...mapGetters(["tasks"])
@@ -72,7 +75,7 @@ export default {
       }
 
       this.records = await this.getAllTasks(userId);
-      this.$refs.myModal.$refs.myModalRef.hide();
+      this.$refs.editModal.$refs.myModalRef.hide();
     }
   }
 };
