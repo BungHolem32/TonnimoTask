@@ -23,7 +23,7 @@ let tasks = {
       return axios(`http://localhost:3001/api/user/${id}/tasks`)
         .then(res => {
           let tasks = res.data.data
-          state.commit('saveTasks', { tasks })
+          state.commit('saveTasks', { tasks });
 
           return tasks
         })

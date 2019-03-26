@@ -1,54 +1,26 @@
 <template>
   <div class="tasks container">
-    <h1>To Do List</h1>
-    <div class="form-row">
-      <div class="col-md-10">
-        <input
-          required
-          name="task"
-          type="text"
-          class="form-control"
-          v-model="defaultTask.description"
-        >
-      </div>
-      <div class="col-md-2">
-        <input
-          type="button"
-          value="Add new task"
-          class="btn btn-primary text-center addButton"
-          required
-          @click="addNewTask"
-        >
-      </div>
-    </div>
-
+    <h1>ToDo <small>list</small> </h1>
+    <create></create>
     <ul class="list-group text-left">
       <li v-for="task in records" :key="task.id" class="list-group-item" :class="{done:task.done}">
-        <input type="checkbox" v-model="task.done">
+        <label for="done" class="sr-only"></label>
+        <input id="done" type="checkbox" v-model="task.done">
         {{task.description}}
         <div class="actions">
-          <b-button v-b-modal.editModal @click="edit(task)">Edit</b-button>
-          <b-button @click="remove(task)">Delete</b-button>
+          <b-button variant="success" v-b-modal.editModal @click="edit(task)">Edit</b-button>
+          <b-button variant="danger" @click="remove(task)">Delete</b-button>
         </div>
       </li>
     </ul>
-
-    <b-modal id="editModal" title="edit modal" ref="myModalRef">
-      <div class="form-row">
-        <div class="col-md-10">
-          <input name="task" type="text" class="form-control" v-model="editedTask.description">
-        </div>
-      </div>
-      <div slot="modal-footer" class="w-100">
-        <p class="float-left">Modal Footer Content</p>
-        <b-button size="sm" class="float-right" variant="primary" @click="save(editedTask)">Save</b-button>
-      </div>
-    </b-modal>
+    <modal ref="myModal" :editedTask = 'editedTask'></modal>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import create from './_partials/create'
+import modal from './_partials/modal'
 
 export default {
   name: "Tasks",
@@ -66,26 +38,21 @@ export default {
       editedTaskIndex: -1
     };
   },
+  components:{
+    create,
+    modal
+  },
   computer: {
     ...mapGetters(["tasks"])
   },
-
   async created() {
     let user_id = this.$route.params.user_id;
     this.records = await this.getAllTasks(user_id);
   },
   methods: {
     ...mapActions(["saveTask", "deleteTask", "getAllTasks"]),
-    addNewTask(description) {
-      if (description) {
-        let task = Object.assign({}, this.defaultTask);
-        this.records.push(task);
-        this.save(task);
-      }
-    },
     edit(task) {
       this.editedTaskIndex = this.records.indexOf(task);
-      console.log(this.editedTaskIndex);
       this.editedTask = Object.assign({}, task);
     },
     remove(task) {
@@ -101,11 +68,11 @@ export default {
       if (this.editedTaskIndex > -1) {
         Object.assign(this.records[this.editedTaskIndex], this.task);
       } else {
-        this.records.push(this.task);
+        this.records.push(task);
       }
 
       this.records = await this.getAllTasks(userId);
-      this.$refs.myModalRef.hide();
+      this.$refs.myModal.$refs.myModalRef.hide();
     }
   }
 };
@@ -122,6 +89,8 @@ export default {
   border: 1px solid gray;
   border-radius: 3px;
   padding: 20px;
+  box-shadow: 0px 1px 3px 1px;
+  background: white;
 }
 
 .addButton {
@@ -135,4 +104,5 @@ export default {
 .actions {
   float: right;
 }
+
 </style>
