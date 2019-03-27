@@ -14,9 +14,9 @@
 </template>
 
 <script>
-  import create from './create'
-  import edit from './edit'
-  import list from './list'
+  import create from './_partials/create'
+  import edit from './_partials/edit'
+  import list from './_partials/list'
 
   export default {
     name: "Tasks",
