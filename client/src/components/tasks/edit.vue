@@ -23,7 +23,7 @@
         props:['editedTask'],
       methods:{
           save(task){
-            this.$parent.save(task)
+            this.$parent.$refs.listTasks.save(task)
           }
       }
     }

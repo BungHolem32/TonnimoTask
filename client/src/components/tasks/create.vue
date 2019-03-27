@@ -39,7 +39,7 @@
         addNewTask() {
             let task = Object.assign({}, this.defaultTask);
             this.$parent.records.push(task);
-            this.$parent.save(task);
+            this.$parent.$refs.listTasks.save(task);
         },
       }
 

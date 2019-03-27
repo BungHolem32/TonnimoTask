@@ -1,111 +1,51 @@
 <template>
   <div class="tasks container">
-    <h1>ToDo <small>list</small> </h1>
+    <!--TITLE-->
+    <h1>ToDo
+      <small>list</small>
+    </h1>
     <!--ADD NEW TASK-->
     <create></create>
     <!--DISPLAY LIST OF TASKS-->
-    <ul class="list-group text-left">
-      <li v-for="task in records" :key="task.id" class="list-group-item" :class="{done:task.done}">
-        <label for="done" class="sr-only"></label>
-        <input id="done" type="checkbox" v-model="task.done">
-        {{task.description}}
-        <div class="actions">
-          <b-button size="sm" variant="success" v-b-modal.editModal @click="edit(task)">Edit</b-button>
-          <b-button size="sm" variant="danger" @click="remove(task)">Delete</b-button>
-        </div>
-      </li>
-    </ul>
+    <list ref="listTasks"></list>
     <!--EDIT PAGE MODAL-->
-    <edit ref="editModal" :editedTask = 'editedTask'></edit>
+    <edit ref="editModal" :editedTask='editedTask'></edit>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import create from './_partials/create'
-import edit from './_partials/edit'
+  import create from './create'
+  import edit from './edit'
+  import list from './list'
 
-export default {
-  name: "Tasks",
-  data() {
-    return {
-      records: [],
-      defaultTask: {
-        description: null,
-        done: false
-      },
-      editedTask: {
-        description: "",
-        done: false
-      },
-      editedTaskIndex: -1
-    };
-  },
-  components:{
-    create,
-    edit
-  },
-  computer: {
-    ...mapGetters(["tasks"])
-  },
-  async created() {
-    let user_id = this.$route.params.user_id;
-    this.records = await this.getAllTasks(user_id);
-  },
-  methods: {
-    ...mapActions(["saveTask", "deleteTask", "getAllTasks"]),
-    edit(task) {
-      this.editedTaskIndex = this.records.indexOf(task);
-      this.editedTask = Object.assign({}, task);
+  export default {
+    name: "Tasks",
+    data() {
+      return {
+        records: [],
+        defaultTask: {
+          description: null,
+          done: false
+        },
+        editedTask: {
+          description: "",
+          done: false
+        },
+        editedTaskIndex: -1
+      };
     },
-    remove(task) {
-      let userId = this.$route.params.user_id;
-      this.deleteTask({ task, userId });
-      const index = this.records.indexOf(task);
-      confirm("Are you sure you want to delete this item") &&
-        this.records.splice(index, 1);
+    components: {
+      create,
+      edit,
+      list
     },
-    async save(task) {
-      let userId = this.$route.params.user_id;
-      await this.saveTask({ task, userId });
-      if (this.editedTaskIndex > -1) {
-        Object.assign(this.records[this.editedTaskIndex], this.task);
-      } else {
-        this.records.push(task);
-      }
+    methods: {
 
-      this.records = await this.getAllTasks(userId);
-      this.$refs.editModal.$refs.myModalRef.hide();
     }
-  }
-};
+  };
 </script>
 
 
-<style>
-.done {
-  text-decoration: line-through;
-}
-
-.tasks {
-  max-width: 800px;
-  border: 1px solid gray;
-  border-radius: 3px;
-  padding: 20px;
-  box-shadow: 0px 1px 3px 1px;
-  background: white;
-}
-
-.addButton {
-  width: 100%;
-}
-
-.form-row {
-  margin-bottom: 20px;
-}
-
-.actions {
-  float: right;
-}
-
+<style lang="scss">
+  @import "./index";
 </style>

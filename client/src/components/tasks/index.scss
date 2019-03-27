@@ -1,0 +1,40 @@
+.tasks {
+  max-width: 800px;
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 20px;
+  box-shadow: 0px 1px 3px 1px;
+  background: white;
+
+  .actions {
+    float: right;
+    &:hover{
+      cursor: pointer;
+    }
+  }
+
+  .done-checkbox{
+    margin-bottom: 1rem;
+    display: inline-block;
+    margin-right: 10px;
+
+    input{
+      display: inline-block;
+    }
+  }
+
+  .form-row{
+    margin: 0 0 10px;
+    .addButton{
+      width: 100%;
+      margin: 0 0 10px ;
+    }
+  }
+
+
+}
+
+.done {
+  text-decoration: line-through;
+}
+
