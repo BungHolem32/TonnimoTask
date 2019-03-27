@@ -1,6 +1,6 @@
 <template>
   <ul class="list-group text-left task-list">
-    <li v-for="task in records" :key="task.id" class="list-group-item" :class="{done:task.done}">
+    <li v-for="task in $parent.records" :key="task.id" class="list-group-item" :class="{done:task.done}">
       <div class="form-group done-checkbox">
         <input class="form-check" id="done" type="checkbox" v-model="task.done">
       </div>
@@ -22,23 +22,9 @@
 
   export default {
     name: "list",
-    data() {
-      return {
-        records: [],
-        defaultTask: {
-          description: null,
-          done: false
-        },
-        editedTask: {
-          description: "",
-          done: false
-        },
-        editedTaskIndex: -1
-      }
-    },
     async created() {
-      let user_id = this.$route.params.user_id;
-      this.records = await this.getAllTasks(user_id);
+      let userId = this.$route.params.user_id;
+      this.$parent.records = await this.getAllTasks(userId) ? await this.getAllTasks(userId) : [] ;
     },
     computer: {
       ...mapGetters(["tasks"])
@@ -46,25 +32,27 @@
     methods: {
       ...mapActions(["saveTask", "deleteTask", "getAllTasks"]),
       edit(task) {
-        this.$parent.editedTaskIndex = this.records.indexOf(task);
+        this.$parent.editedTaskIndex = this.$parent.records.indexOf(task);
         this.$parent.editedTask = Object.assign({}, task);
       },
       remove(task) {
         let userId = this.$route.params.user_id;
         this.deleteTask({task, userId});
-        const index = this.records.indexOf(task);
+        const index = this.$parent.records.indexOf(task);
         confirm("Are you sure you want to delete this item") &&
-        this.records.splice(index, 1);
+        this.$parent.records.splice(index, 1);
       },
       async save(task) {
+        if (this.$parent.editedTaskIndex > -1) {
+          Object.assign(this.$parent.records[this.$parent.editedTaskIndex], this.task);
+        } else {
+          console.log(this.$parent.records);
+          this.$parent.records.push(task);
+        }
+
         let userId = this.$route.params.user_id;
         await this.saveTask({task, userId});
-        if (this.editedTaskIndex > -1) {
-          Object.assign(this.records[this.editedTaskIndex], this.task);
-        } else {
-          this.records.push(task);
-        }
-        this.records = await this.getAllTasks(userId);
+
         this.$parent.$refs.editModal.$refs.myModalRef.hide();
       }
     },

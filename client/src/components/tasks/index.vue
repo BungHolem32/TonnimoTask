@@ -39,9 +39,6 @@
       edit,
       list
     },
-    methods: {
-
-    }
   };
 </script>
 
