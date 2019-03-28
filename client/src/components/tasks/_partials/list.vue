@@ -24,7 +24,8 @@
     name: "list",
     async created() {
       let userId = this.$route.params.user_id;
-      this.$parent.records = await this.getAllTasks(userId) ? await this.getAllTasks(userId) : [] ;
+      let list  =await this.getAllTasks(userId);
+      this.$parent.records = list && list.length ? list : [] ;
     },
     computer: {
       ...mapGetters(["tasks"])
@@ -43,18 +44,20 @@
         this.$parent.records.splice(index, 1);
       },
       async save(task) {
+        let userId = this.$route.params.user_id;
+        await this.saveTask({task, userId});
+        this.$parent.records = await this.getAllTasks(userId);
         if (this.$parent.editedTaskIndex > -1) {
           Object.assign(this.$parent.records[this.$parent.editedTaskIndex], this.task);
         } else {
           console.log(this.$parent.records);
           this.$parent.records.push(task);
         }
-
-        let userId = this.$route.params.user_id;
-        await this.saveTask({task, userId});
-
+        //close modal
         this.$parent.$refs.editModal.$refs.myModalRef.hide();
+
       }
+
     },
   }
 </script>
